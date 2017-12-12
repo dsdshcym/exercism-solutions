@@ -28,13 +28,18 @@ defmodule Raindrops do
       %FactorRule{factor: 7, sound: "Plong"}
     ]
 
-  def convert(number) when rem(number, 3) == 0 or rem(number, 5) == 0 or rem(number, 7) == 0 do
+  def convert(number) do
     @rules
     |> Enum.map(&(FactorRule.to_sound(&1, number)))
     |> Enum.join
+    |> or_number_string(number)
   end
 
-  def convert(number) do
+  def or_number_string("", number) do
     to_string(number)
+  end
+
+  def or_number_string(result, number) do
+    result
   end
 end
