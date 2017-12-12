@@ -1,42 +1,52 @@
 class Complement
-  def self.of_dna(dna)
-    new(dna).to_s
+  def self.of_dna(sequence)
+    new(sequence).to_s
   end
 
-  def initialize(dna)
-    @dna = dna
+  def initialize(sequence)
+    @dna = Dna.new(sequence)
   end
 
   def to_s
-    if dna_valid?
-      dna_nucleotides
-        .map { |char| rna_complement(char) }
-        .join
-    else
-      ''
-    end
-  end
-
-  def rna_complement(char = nil)
-    case char
-    when 'C' then 'G'
-    when 'G' then 'C'
-    when 'T' then 'A'
-    when 'A' then 'U'
-    else ''
-    end
+    dna.complement_rna.to_s
   end
 
   private
 
   attr_reader :dna
+end
 
-  def dna_nucleotides
-    dna.chars
+class Dna
+  VALID_NUCLEOTIDES = %w[G C A T].freeze
+  NUCLEOTIDES_COMPLEMENT = {
+    'C' => 'G',
+    'G' => 'C',
+    'T' => 'A',
+    'A' => 'U'
+  }.freeze
+
+  def initialize(sequence)
+    @nucleotides = sequence.chars
   end
 
-  def dna_valid?
-    dna_nucleotides.all? { |nucleotides| %w[G C A T].include?(nucleotides) }
+  def complement_rna
+    return '' unless valid?
+
+    nucleotides
+      .map { |nucleotide| rna_complement(nucleotide) }
+      .join
+  end
+
+  def rna_complement(nucleotide = nil)
+    NUCLEOTIDES_COMPLEMENT.fetch(nucleotide, '')
+  end
+
+  private
+
+  attr_reader :nucleotides
+
+  def valid?
+    nucleotides.all? { |nucleotides| VALID_NUCLEOTIDES.include?(nucleotides) }
   end
 end
 
