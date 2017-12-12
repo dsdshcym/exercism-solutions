@@ -25,29 +25,39 @@ class Raindrops
 end
 
 module RaindropSound
-  class ChainableFactor
-    def initialize(factor, sound, next_sound = Null.new, fallback = Number.new)
-      @factor = factor
-      @sound = sound
-      @next_sound = next_sound
+  class Base
+    def initialize(fallback)
       @fallback = fallback
     end
 
     def for(number)
       if convertable?(number)
-        direct_convert(number)
+        convert(number)
       else
-        fallback_convert(number)
+        fallback.for(number)
       end
+    end
+
+    private
+
+    attr_reader :fallback
+  end
+
+  class ChainableFactor < Base
+    def initialize(factor, sound, next_sound = Null.new, fallback = NumberToString.new)
+      @factor = factor
+      @sound = sound
+      @next_sound = next_sound
+      super(fallback)
     end
 
     protected
 
-    def direct_convert(number)
+    def convert(number)
       if dividable?(number)
-        sound + next_sound.direct_convert(number)
+        sound + next_sound.convert(number)
       else
-        next_sound.direct_convert(number)
+        next_sound.convert(number)
       end
     end
 
@@ -68,23 +78,35 @@ module RaindropSound
     end
   end
 
-  class Null
+  class NumberToString < Base
+    def initialize
+      super(Null.new)
+    end
+
+    def for(number)
+      number.to_s
+    end
+
+    def convertable?(number)
+      number.respond_to?(:to_s)
+    end
+  end
+
+  class Null < Base
+    def initialize
+      super(nil)
+    end
+
     def for(_)
       ''
     end
 
-    def direct_convert(_)
+    def convert(_)
       ''
     end
 
     def convertable?(_)
       false
-    end
-  end
-
-  class Number
-    def for(number)
-      number.to_s
     end
   end
 end
