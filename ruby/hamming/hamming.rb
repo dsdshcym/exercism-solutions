@@ -11,7 +11,7 @@ class Hamming
   end
 
   def distance
-    diff_array.sum
+    dna_pairs.count { |a, b| a != b }
   end
 
   private
@@ -20,10 +20,6 @@ class Hamming
 
   def dna_pairs
     dna_a_chars.zip(dna_b_chars)
-  end
-
-  def diff_array
-    dna_pairs.map { |a, b| a == b ? 0 : 1 }
   end
 end
 
