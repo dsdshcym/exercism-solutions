@@ -1,15 +1,3 @@
-defmodule FactorRule do
-  defstruct [:factor, :sound]
-
-  def to_sound(%FactorRule{factor: factor, sound: sound}, number) when rem(number, factor) == 0 do
-    sound
-  end
-
-  def to_sound(_, _) do
-    ""
-  end
-end
-
 defmodule Raindrops do
   @doc """
   Returns a string based on raindrop factors.
@@ -22,24 +10,27 @@ defmodule Raindrops do
   """
   @spec convert(pos_integer) :: String.t
 
-  @rules [
-      %FactorRule{factor: 3, sound: "Pling"},
-      %FactorRule{factor: 5, sound: "Plang"},
-      %FactorRule{factor: 7, sound: "Plong"}
-    ]
-
   def convert(number) do
-    @rules
-    |> Enum.map(&(FactorRule.to_sound(&1, number)))
-    |> Enum.join
-    |> or_number_string(number)
+    ""
+    |> maybe_concat(rem(number, 3) == 0, "Pling")
+    |> maybe_concat(rem(number, 5) == 0, "Plang")
+    |> maybe_concat(rem(number, 7) == 0, "Plong")
+    |> fallback_if_empty(to_string(number))
   end
 
-  def or_number_string("", number) do
-    to_string(number)
+  defp maybe_concat(result, true, sound) do
+    result <> sound
   end
 
-  def or_number_string(result, number) do
+  defp maybe_concat(result, false, _sound) do
+    result
+  end
+
+  defp fallback_if_empty("", sound) do
+    sound
+  end
+
+  defp fallback_if_empty(result, _sound) do
     result
   end
 end
