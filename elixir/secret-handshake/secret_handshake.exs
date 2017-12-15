@@ -18,10 +18,10 @@ defmodule SecretHandshake do
   @spec commands(code :: integer) :: list(String.t())
   def commands(code) do
     []
-    |> handshake(check(code, 0b1), &(&1 ++ ["wink"]))
-    |> handshake(check(code, 0b10), &(&1 ++ ["double blink"]))
-    |> handshake(check(code, 0b100), &(&1 ++ ["close your eyes"]))
-    |> handshake(check(code, 0b1000), &(&1 ++ ["jump"]))
+    |> handshake(check(code, 0b1), append_action_fn("wink"))
+    |> handshake(check(code, 0b10), append_action_fn("double blink"))
+    |> handshake(check(code, 0b100), append_action_fn("close your eyes"))
+    |> handshake(check(code, 0b1000), append_action_fn("jump"))
     |> handshake(check(code, 0b10000), &Enum.reverse/1)
   end
 
@@ -31,6 +31,10 @@ defmodule SecretHandshake do
 
   defp handshake(actions, false, _transformation) do
     actions
+  end
+
+  defp append_action_fn(action) do
+    fn(actions) -> actions ++ [action] end
   end
 
   defp check(code, flag) do
