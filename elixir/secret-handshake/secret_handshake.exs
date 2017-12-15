@@ -18,54 +18,18 @@ defmodule SecretHandshake do
   @spec commands(code :: integer) :: list(String.t())
   def commands(code) do
     []
-    |> handshake(code, 0b1)
-    |> handshake(code, 0b10)
-    |> handshake(code, 0b100)
-    |> handshake(code, 0b1000)
-    |> handshake(code, 0b10000)
+    |> handshake(check(code, 0b1), &(&1 ++ ["wink"]))
+    |> handshake(check(code, 0b10), &(&1 ++ ["double blink"]))
+    |> handshake(check(code, 0b100), &(&1 ++ ["close your eyes"]))
+    |> handshake(check(code, 0b1000), &(&1 ++ ["jump"]))
+    |> handshake(check(code, 0b10000), &Enum.reverse/1)
   end
 
-  defp handshake(actions, code, flag = 0b1) do
-    if check(code, flag) do
-      actions ++ ["wink"]
-    else
-      actions
-    end
+  defp handshake(actions, true, transformation) do
+    transformation.(actions)
   end
 
-  defp handshake(actions, code, flag = 0b10) do
-    if check(code, flag) do
-      actions ++ ["double blink"]
-    else
-      actions
-    end
-  end
-
-  defp handshake(actions, code, flag = 0b100) do
-    if check(code, flag) do
-      actions ++ ["close your eyes"]
-    else
-      actions
-    end
-  end
-
-  defp handshake(actions, code, flag = 0b1000) do
-    if check(code, flag) do
-      actions ++ ["jump"]
-    else
-      actions
-    end
-  end
-
-  defp handshake(actions, code, flag = 0b10000) do
-    if check(code, flag) do
-      Enum.reverse(actions)
-    else
-      actions
-    end
-  end
-
-  defp handshake(actions, code, _) do
+  defp handshake(actions, false, _transformation) do
     actions
   end
 
