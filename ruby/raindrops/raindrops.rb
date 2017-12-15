@@ -1,31 +1,42 @@
-require_relative 'factor_rule'
-require_relative 'chainable_sound'
+require_relative 'sound_chain'
+require_relative 'fallback_sound'
 
 class Raindrops
   def self.convert(number)
-    new.convert(number)
+    new.for(number)
   end
 
   def initialize
-    factor_rule = init_factor_rule
-
-    @sound = ChainableSound.chain(factor_rule)
+    @sounds = init_sounds
   end
 
-  def convert(number)
-    sound.for(number)
+  def for(number)
+    sounds
+      .detect { |sound| sound.convertable?(number) }
+      .for(number)
   end
 
   private
 
-  attr_reader :sound
+  attr_reader :sounds
 
-  def init_factor_rule
-    FactorRule.new(3, 'Pling').tap do |rule|
-      rule
-        .chain(5, 'Plang')
-        .chain(7, 'Plong')
-    end
+  def init_sounds
+    @sounds = [
+      init_sound_chain,
+      init_fallback_sound
+    ]
+  end
+
+  def init_sound_chain
+    SoundChain.new(
+      [3, 'Pling'],
+      [5, 'Plang'],
+      [7, 'Plong']
+    )
+  end
+
+  def init_fallback_sound
+    FallbackSound.new
   end
 end
 
