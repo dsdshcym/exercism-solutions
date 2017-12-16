@@ -1,6 +1,4 @@
 defmodule ProteinTranslation do
-  @valid_condons ~w(UGU UGC UUA UUG AUG UUU UUC UCU UCC UCA UCG UGG UAU UAC UAA UAG UGA)
-
   @doc """
   Given an RNA string, return a list of proteins specified by codons, in order.
   """
@@ -18,18 +16,12 @@ defmodule ProteinTranslation do
   def _of_rna("") do
     []
   end
-  def _of_rna("UAA" <> _remain) do
-    []
-  end
-  def _of_rna("UAG" <> _remain) do
-    []
-  end
-  def _of_rna("UGA" <> _remain) do
-    []
-  end
-  def _of_rna(<< codon :: binary-size(3) >> <> remain) when codon in @valid_condons do
-    {:ok, protein} = of_codon(codon)
-    [protein | _of_rna(remain)]
+  def _of_rna(<< codon :: binary-size(3) >> <> remain) do
+    case of_codon(codon) do
+      {:ok, "STOP"} -> []
+      {:ok, protein} -> [protein | _of_rna(remain)]
+      {:error, _} -> [:error]
+    end
   end
   def _of_rna(_invalid_codon) do
     [:error]
