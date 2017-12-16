@@ -8,22 +8,21 @@ defmodule RotationalCipher do
   """
   @spec rotate(text :: String.t(), shift :: integer) :: String.t()
   def rotate(text, shift) do
-    String.to_charlist(text)
-    |> Enum.map(&(rotate_char(&1, shift)))
+    text
+    |> String.to_charlist
+    |> Enum.map(&(rotate_alphabet(&1, shift)))
     |> to_string
   end
 
-  @lower_alphabet ?a..?z |> Enum.to_list
-  @upper_alphabet ?A..?Z |> Enum.to_list
+  defp rotate_alphabet(char, shift) when char in ?a..?z do
+    ?a + rem(char - ?a + shift, 26)
+  end
 
-  defp rotate_char(char, shift) do
-    cond do
-      Enum.find_index(@lower_alphabet, &(&1 == char)) ->
-        String.at(to_string(@lower_alphabet), rem(Enum.find_index(@lower_alphabet, &(&1 == char)) + shift, 26))
-      Enum.find_index(@upper_alphabet, &(&1 == char)) ->
-        String.at(to_string(@upper_alphabet), rem(Enum.find_index(@upper_alphabet, &(&1 == char)) + shift, 26))
-      true ->
-        char
-    end
+  defp rotate_alphabet(char, shift) when char in ?A..?Z do
+    ?A + rem(char - ?A + shift, 26)
+  end
+
+  defp rotate_alphabet(char, _shift) do
+    char
   end
 end
