@@ -18,48 +18,6 @@ defmodule ProteinTranslation do
   def _of_rna("") do
     []
   end
-  def _of_rna("UGU" <> remain) do
-    ["Cysteine" | _of_rna(remain)]
-  end
-  def _of_rna("UGC" <> remain) do
-    ["Cysteine" | _of_rna(remain)]
-  end
-  def _of_rna("UUA" <> remain) do
-    ["Leucine" | _of_rna(remain)]
-  end
-  def _of_rna("UUG" <> remain) do
-    ["Leucine" | _of_rna(remain)]
-  end
-  def _of_rna("AUG" <> remain) do
-    ["Methionine" | _of_rna(remain)]
-  end
-  def _of_rna("UUU" <> remain) do
-    ["Phenylalanine" | _of_rna(remain)]
-  end
-  def _of_rna("UUC" <> remain) do
-    ["Phenylalanine" | _of_rna(remain)]
-  end
-  def _of_rna("UCU" <> remain) do
-    ["Serine" | _of_rna(remain)]
-  end
-  def _of_rna("UCC" <> remain) do
-    ["Serine" | _of_rna(remain)]
-  end
-  def _of_rna("UCA" <> remain) do
-    ["Serine" | _of_rna(remain)]
-  end
-  def _of_rna("UCG" <> remain) do
-    ["Serine" | _of_rna(remain)]
-  end
-  def _of_rna("UGG" <> remain) do
-    ["Tryptophan" | _of_rna(remain)]
-  end
-  def _of_rna("UAU" <> remain) do
-    ["Tyrosine" | _of_rna(remain)]
-  end
-  def _of_rna("UAC" <> remain) do
-    ["Tyrosine" | _of_rna(remain)]
-  end
   def _of_rna("UAA" <> _remain) do
     []
   end
@@ -68,6 +26,11 @@ defmodule ProteinTranslation do
   end
   def _of_rna("UGA" <> _remain) do
     []
+  end
+  def _of_rna(<< codonbits :: size(24) >> <> remain) when <<codonbits :: size(24)>> in @valid_condons do
+    codon = <<codonbits :: size(24)>>
+    {:ok, protein} = of_codon(codon)
+    [protein | _of_rna(remain)]
   end
   def _of_rna(_invalid_codon) do
     [:error]
