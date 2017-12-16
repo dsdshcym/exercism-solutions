@@ -27,8 +27,7 @@ defmodule ProteinTranslation do
   def _of_rna("UGA" <> _remain) do
     []
   end
-  def _of_rna(<< codonbits :: size(24) >> <> remain) when <<codonbits :: size(24)>> in @valid_condons do
-    codon = <<codonbits :: size(24)>>
+  def _of_rna(<< codon :: binary-size(3) >> <> remain) when codon in @valid_condons do
     {:ok, protein} = of_codon(codon)
     [protein | _of_rna(remain)]
   end
