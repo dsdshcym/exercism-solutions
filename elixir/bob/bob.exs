@@ -19,12 +19,11 @@ defmodule Bob do
   end
 
   defp shouting?(input) do
-    (not all_numbers_or_non_words(input)) and all_upcase?(input)
+    all_have_cases(input) and all_upcase?(input)
   end
 
-  defp all_numbers_or_non_words(input) do
-    input
-    |> String.match?(~r/^[\W|\d]*$/u)
+  defp all_have_cases(input) do
+    String.downcase(input) != String.upcase(input)
   end
 
   defp all_upcase?(input) do
