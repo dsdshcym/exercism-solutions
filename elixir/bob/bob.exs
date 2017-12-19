@@ -1,0 +1,33 @@
+defmodule Bob do
+  def hey(input) do
+    cond do
+      silence?(input) -> "Fine. Be that way!"
+      question?(input) -> "Sure."
+      shouting?(input) -> "Whoa, chill out!"
+      true -> "Whatever."
+    end
+  end
+
+  defp silence?(input) do
+    input
+    |> String.match?(~r/^\s*$/)
+  end
+
+  defp question?(input) do
+    input
+    |> String.ends_with?("?")
+  end
+
+  defp shouting?(input) do
+    (not all_numbers_or_non_words(input)) and all_upcase?(input)
+  end
+
+  defp all_numbers_or_non_words(input) do
+    input
+    |> String.match?(~r/^[\W|\d]*$/u)
+  end
+
+  defp all_upcase?(input) do
+    String.upcase(input) == input
+  end
+end
