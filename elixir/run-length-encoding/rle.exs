@@ -8,20 +8,21 @@ defmodule RunLengthEncoder do
   """
   @spec encode(String.t) :: String.t
   def encode(string) do
-    _encode(string, 0, "")
+    Regex.scan(~r/(.)\1*/, string)
+    |> Enum.map(&cleanup_encode_match_results/1)
+    |> Enum.map(&encode_substring/1)
+    |> Enum.join()
   end
 
-  defp _encode("", n, char), do: _encode_char(n, char)
-  defp _encode(<<match::binary-size(1), rest::binary>>, n, match) do
-    _encode(rest, n + 1, match)
-  end
-  defp _encode(<<char::binary-size(1), rest::binary>>, n, non_match) do
-    _encode_char(n, non_match) <> _encode(rest, 1, char)
-  end
+  defp cleanup_encode_match_results([substring, _]), do: substring
 
-  defp _encode_char(0, _char), do: ""
-  defp _encode_char(1, char), do: char
-  defp _encode_char(n, char), do: "#{n}#{char}"
+  defp encode_substring(""), do: ""
+  defp encode_substring(<<char::binary-size(1)>>), do: char
+  defp encode_substring(string) do
+    char = String.first(string)
+    count = String.length(string)
+    "#{count}#{char}"
+  end
 
   @spec decode(String.t) :: String.t
   def decode(""), do: ""
