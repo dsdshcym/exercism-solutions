@@ -8,28 +8,20 @@ defmodule RunLengthEncoder do
   """
   @spec encode(String.t) :: String.t
   def encode(string) do
-    _encode(string, "")
+    _encode(string, 0, "")
   end
 
-  defp _encode("", substring), do: _encode_substring(substring)
-  defp _encode(string = <<first::binary-size(1), rest::binary>>, substring) do
-    cond do
-      String.contains?(substring, first) ->
-        _encode(rest, substring <> first)
-      true ->
-        _encode_substring(substring) <> _encode(rest, first)
-    end
+  defp _encode("", n, char), do: _encode_char(n, char)
+  defp _encode(<<match::binary-size(1), rest::binary>>, n, match) do
+    _encode(rest, n + 1, match)
+  end
+  defp _encode(<<char::binary-size(1), rest::binary>>, n, non_match) do
+    _encode_char(n, non_match) <> _encode(rest, 1, char)
   end
 
-  defp _encode_substring(string) do
-    char = String.first(string)
-    count = String.length(string)
-    case count do
-      0 -> ""
-      1 -> char
-      _ -> "#{count}#{char}"
-    end
-  end
+  defp _encode_char(0, _char), do: ""
+  defp _encode_char(1, char), do: char
+  defp _encode_char(n, char), do: "#{n}#{char}"
 
   @spec decode(String.t) :: String.t
   def decode(""), do: ""
