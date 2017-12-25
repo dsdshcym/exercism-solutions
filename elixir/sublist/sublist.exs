@@ -14,18 +14,12 @@ defmodule Sublist do
 
   defp equal?(a, b), do: a == b
 
-  defp sublist?([], _b), do: true
-  defp sublist?(a = [head | tail_a], [head | tail_b]) do
-    sublist_at_start?(tail_a, tail_b) or sublist?(a, tail_b)
+  defp sublist?([], _), do: true
+  defp sublist?(a, b) do
+    b
+    |> Stream.chunk(length(a), 1)
+    |> Enum.member?(a)
   end
-  defp sublist?(a, [_unmatch | tail_b]) do
-    sublist_at_start?(a, tail_b) or sublist?(a, tail_b)
-  end
-  defp sublist?(_a, []), do: false
-
-  defp sublist_at_start?([], _b), do: true
-  defp sublist_at_start?([head | tail_a], [head | tail_b]), do: sublist_at_start?(tail_a, tail_b)
-  defp sublist_at_start?(_a, _b), do: false
 
   defp superlist?(a, b), do: sublist?(b, a)
 end
