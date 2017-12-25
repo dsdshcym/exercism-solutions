@@ -17,7 +17,7 @@ defmodule Sublist do
   defp sublist?([], _), do: true
   defp sublist?(a, b) do
     b
-    |> Stream.chunk(length(a), 1)
+    |> Stream.chunk_every(length(a), 1, :discard)
     |> Enum.member?(a)
   end
 
