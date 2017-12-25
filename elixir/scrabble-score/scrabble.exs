@@ -10,9 +10,11 @@ defmodule Scrabble do
     |> word_score()
   end
 
-  defp word_score(""), do: 0
-  defp word_score(<<char::binary-size(1), rest::binary>>) do
-    char_score(char) + word_score(rest)
+  defp word_score(word) do
+    word
+    |> String.graphemes()
+    |> Enum.map(&char_score/1)
+    |> Enum.sum()
   end
 
   defp char_score("a"), do: 1
