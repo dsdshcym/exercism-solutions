@@ -7,12 +7,15 @@ defmodule Matrix do
   """
   @spec from_string(input :: String.t()) :: %Matrix{}
   def from_string(input) do
-    matrix =
-      input
-      |> String.split("\n")
-      |> Enum.map(fn(row) -> row |> String.split() |> Enum.map(&String.to_integer/1) end)
+    %Matrix{matrix: _from_string(input)}
+  end
 
-    %Matrix{matrix: matrix}
+  defp _from_string(input) do
+    for row <- String.split(input, "\n") do
+      for cell <- String.split(row, " ") do
+        String.to_integer(cell)
+      end
+    end
   end
 
   @doc """
