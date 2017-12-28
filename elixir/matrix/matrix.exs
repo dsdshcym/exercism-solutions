@@ -50,9 +50,13 @@ defmodule Matrix do
   """
   @spec columns(matrix :: %Matrix{}) :: list(list(integer))
   def columns(matrix) do
-    matrix
-    |> rows()
-    |> rotate()
+    column_length =
+      matrix
+      |> rows()
+      |> length()
+
+    (0..column_length-1)
+    |> Enum.map(fn(index) -> column(matrix, index) end)
   end
 
   @doc """
@@ -61,18 +65,7 @@ defmodule Matrix do
   @spec column(matrix :: %Matrix{}, index :: integer) :: list(integer)
   def column(matrix, index) do
     matrix
-    |> columns()
-    |> Enum.at(index)
-  end
-
-  @spec rotate(list(integer)) :: list(integer)
-  defp rotate(rows) do
-    column_length = length(rows)
-
-    (0..column_length-1)
-    |> Enum.map(fn(index) ->
-      rows
-      |> Enum.map(fn(row) -> Enum.at(row, index) end)
-    end)
+    |> rows()
+    |> Enum.map(fn(row) -> Enum.at(row, index) end)
   end
 end
