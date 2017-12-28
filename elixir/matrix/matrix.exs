@@ -1,5 +1,5 @@
 defmodule Matrix do
-  defstruct matrix: nil
+  defstruct rows: [], cols: []
 
   @doc """
   Convert an `input` string, with rows separated by newlines and values
@@ -7,13 +7,25 @@ defmodule Matrix do
   """
   @spec from_string(input :: String.t()) :: %Matrix{}
   def from_string(input) do
-    %Matrix{matrix: _from_string(input)}
+    rows = rows_from_string(input)
+    cols = cols_from_rows(rows)
+    %Matrix{rows: rows, cols: cols}
   end
 
-  defp _from_string(input) do
+  defp rows_from_string(input) do
     for row <- String.split(input, "\n") do
       for cell <- String.split(row, " ") do
         String.to_integer(cell)
+      end
+    end
+  end
+
+  defp cols_from_rows(rows) do
+    length = length(rows) - 1
+
+    for index <- 0..length do
+      for row <- rows do
+        Enum.at(row, index)
       end
     end
   end
@@ -34,8 +46,8 @@ defmodule Matrix do
   Given a `matrix`, return its rows as a list of lists of integers.
   """
   @spec rows(matrix :: %Matrix{}) :: list(list(integer))
-  def rows(%Matrix{matrix: matrix}) do
-    matrix
+  def rows(matrix) do
+    matrix.rows
   end
 
   @doc """
@@ -53,13 +65,7 @@ defmodule Matrix do
   """
   @spec columns(matrix :: %Matrix{}) :: list(list(integer))
   def columns(matrix) do
-    column_length =
-      matrix
-      |> rows()
-      |> length()
-
-    (0..column_length-1)
-    |> Enum.map(fn(index) -> column(matrix, index) end)
+    matrix.cols
   end
 
   @doc """
@@ -68,7 +74,7 @@ defmodule Matrix do
   @spec column(matrix :: %Matrix{}, index :: integer) :: list(integer)
   def column(matrix, index) do
     matrix
-    |> rows()
-    |> Enum.map(fn(row) -> Enum.at(row, index) end)
+    |> columns()
+    |> Enum.at(index)
   end
 end
