@@ -1,62 +1,37 @@
 defmodule NANP do
   defstruct valid: false, area_code: "000", exchange_code: "000", subscriber_number: "0000"
 
+  @country_calling_code_regex "(?<country_calling_code>\\+?1\\s*)?"
+  @area_code_regex "(?<area_code>[2-9][0-9]{2})"
+  @exchange_code_regex "(?<exchange_code>[2-9][0-9]{2})"
+  @subscriber_number_regex "(?<subscriber_number>[0-9]{4})"
+
+  @parens_style_regex ~r/^#{@country_calling_code_regex}\(#{@area_code_regex}\) #{@exchange_code_regex}-#{@subscriber_number_regex}$/
+  @dot_style_regex ~r/^#{@country_calling_code_regex}#{@area_code_regex}\.#{@exchange_code_regex}\.#{@subscriber_number_regex}$/
+  @pure_digits_style_regex ~r/^#{@country_calling_code_regex}#{@area_code_regex}#{@exchange_code_regex}#{@subscriber_number_regex}$/
+
   def new(raw) do
-    if letter_mixed_in?(raw) do
-      %NANP{}
-    else
-      raw
-      |> remove_non_digits()
-      |> remove_country_calling_code()
-      |> set_parts()
-      |> validate_area_code()
-      |> validate_exchange_code()
-      |> return_invalid_if_nil()
-    end
-  end
-
-  defp letter_mixed_in?(raw) do
-    String.match?(raw, ~r/\p{L}/)
-  end
-
-  defp remove_non_digits(raw) do
     raw
-    |> String.replace(~r/[^\d]/, "")
+    |> maybe_match(@parens_style_regex)
+    |> maybe_match(@dot_style_regex)
+    |> maybe_match(@pure_digits_style_regex)
+    |> maybe_return_invalid()
   end
 
-  defp remove_country_calling_code("1" <> <<rest::binary-size(10)>>), do: rest
-  defp remove_country_calling_code(no_match), do: no_match
-
-  defp set_parts(<<area_code::binary-size(3), exchange_code::binary-size(3), subscriber_number::binary-size(4)>>) do
-    %NANP{
-      valid: true,
-      area_code: area_code,
-      exchange_code: exchange_code,
-      subscriber_number: subscriber_number
-    }
-  end
-  defp set_parts(_), do: nil
-
-  defp validate_area_code(nanp = %NANP{valid: true, area_code: area_code}) do
-    cond do
-      String.starts_with?(area_code, "1") -> nil
-      String.starts_with?(area_code, "0") -> nil
-      true -> nanp
+  defp maybe_match(raw, regex) when is_binary(raw) do
+    case Regex.named_captures(regex, raw) do
+      nil -> raw
+      match ->
+        %NANP{valid: true,
+              area_code: match["area_code"],
+              exchange_code: match["exchange_code"],
+              subscriber_number: match["subscriber_number"]}
     end
   end
-  defp validate_area_code(_), do: nil
+  defp maybe_match(nanp, _regex), do: nanp
 
-  defp validate_exchange_code(nanp = %NANP{valid: true, exchange_code: exchange_code}) do
-    cond do
-      String.starts_with?(exchange_code, "1") -> nil
-      String.starts_with?(exchange_code, "0") -> nil
-      true -> nanp
-    end
-  end
-  defp validate_exchange_code(_), do: nil
-
-  defp return_invalid_if_nil(nil), do: %NANP{valid: false}
-  defp return_invalid_if_nil(nanp), do: nanp
+  defp maybe_return_invalid(%NANP{} = nanp), do: nanp
+  defp maybe_return_invalid(_), do: %NANP{}
 end
 
 defimpl String.Chars, for: NANP do
