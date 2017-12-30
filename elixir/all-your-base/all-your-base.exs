@@ -35,9 +35,7 @@ defmodule AllYourBase do
 
   defp to_integer(digits, base) do
     digits
-    |> Enum.reverse()
-    |> Enum.reduce({0, 1}, fn(digit, {result, mul}) -> {result + digit * mul, mul * base} end)
-    |> elem(0)
+    |> Enum.reduce(fn(digit, result) -> result * base + digit end)
   end
 
   defp from_integer(number, base), do: _from_integer(number, base) |> Enum.reverse()
