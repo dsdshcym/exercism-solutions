@@ -8,18 +8,14 @@ defmodule Hamming do
   {:ok, 4}
   """
   @spec hamming_distance([char], [char]) :: non_neg_integer
-  def hamming_distance('', ''), do: {:ok, 0}
-  def hamming_distance('', _), do: {:error,  "Lists must be the same length"}
-  def hamming_distance(_, ''), do: {:error,  "Lists must be the same length"}
-  def hamming_distance([char1 | rest1], [char2 | rest2]) do
-    case hamming_distance(rest1, rest2) do
-      {:ok, rest_distance} ->
-        if char1 == char2 do
-          {:ok, rest_distance}
-        else
-          {:ok, 1 + rest_distance}
-        end
-      {:error, _reason} = error -> error
-    end
+  def hamming_distance(string1, string2) when length(string1) != length(string2) do
+    {:error,  "Lists must be the same length"}
+  end
+  def hamming_distance(string1, string2) do
+    count =
+      Enum.zip(string1, string2)
+      |> Enum.count(fn({a, b}) -> a != b end)
+
+    {:ok, count}
   end
 end
