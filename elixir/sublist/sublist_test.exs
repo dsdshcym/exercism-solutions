@@ -24,6 +24,10 @@ defmodule SublistTest do
     assert Sublist.compare([1], [2]) == :unequal
   end
 
+  test "1.0 is not 1" do
+    assert Sublist.compare([1], [1.0]) == :unequal
+  end
+
   test "comparing massive equal lists" do
     l = Enum.to_list(1..1_000_000)
     assert Sublist.compare(l, l) == :equal

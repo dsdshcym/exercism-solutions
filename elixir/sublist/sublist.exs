@@ -12,7 +12,8 @@ defmodule Sublist do
     end
   end
 
-  defp equal?(a, b), do: a == b
+  defp equal?(a, a), do: true
+  defp equal?(_, _), do: false
 
   defp sublist?([], _), do: true
   defp sublist?(a, b) do
