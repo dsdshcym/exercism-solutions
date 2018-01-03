@@ -10,14 +10,10 @@ defmodule Isogram do
   end
 
   defp all_valid_letters(string) do
-    string
-    |> String.graphemes()
-    |> Enum.filter(&String.match?(&1, ~r/\pL/))
+    Regex.scan(~r/\pL/, string)
   end
 
   defp every_letter_only_appeared_once(letters) do
-    letters
-    |> Enum.group_by(&(&1))
-    |> Enum.all?(fn({_char, appears}) -> Enum.count(appears) == 1 end)
+    letters === Enum.uniq(letters)
   end
 end
