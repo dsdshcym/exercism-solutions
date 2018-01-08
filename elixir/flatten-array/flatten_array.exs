@@ -13,11 +13,9 @@ defmodule FlattenArray do
   """
 
   @spec flatten(list) :: list
+  def flatten([]), do: []
+  def flatten([head | tail]), do: flatten(head) ++ flatten(tail)
+
   def flatten(nil), do: []
-  def flatten(item) when not is_list(item), do: [item]
-  def flatten(list) when is_list(list) do
-    list
-    |> Enum.map(&flatten/1)
-    |> Enum.reduce([], &(&2 ++ &1))
-  end
+  def flatten(item), do: [item]
 end
