@@ -21,7 +21,7 @@ defmodule Meetup do
   def meetup(year, month, weekday, :third), do: next_weekday(year, month, 15, weekday_to_integer(weekday))
   def meetup(year, month, weekday, :fourth), do: next_weekday(year, month, 22, weekday_to_integer(weekday))
   def meetup(year, month, weekday, :teenth), do: next_weekday(year, month, 13, weekday_to_integer(weekday))
-  def meetup(year, month, weekday, :last), do: previous_weekday(year, month, 31, weekday_to_integer(weekday))
+  def meetup(year, month, weekday, :last), do: previous_weekday(year, month, :calendar.last_day_of_the_month(year, month), weekday_to_integer(weekday))
   
   defp weekday_to_integer(:monday), do: 1
   defp weekday_to_integer(:tuesday), do: 2
@@ -46,10 +46,8 @@ defmodule Meetup do
   end
   
   defp previous_weekday(year, month, day, weekday) do
-    case Date.new(year, month, day) do
-      {:ok, date} -> previous_weekday(date, weekday)
-      {:error, _} -> previous_weekday(year, month, day - 1, weekday)
-    end
+    {:ok, date} = Date.new(year, month, day)
+    previous_weekday(date, weekday)
   end
   defp previous_weekday(date, weekday) do
     if Date.day_of_week(date) == weekday do
