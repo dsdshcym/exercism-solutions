@@ -1,4 +1,6 @@
 defmodule Grains do
+  import Bitwise, only: [<<<: 2]
+
   @doc """
   Calculate two to the power of the input minus one.
   """
@@ -6,8 +8,7 @@ defmodule Grains do
   def square(number) when (1 <= number) and (number <= 64), do: {:ok, _square(number)}
   def square(_), do: {:error, "The requested square must be between 1 and 64 (inclusive)"}
 
-  defp _square(1), do: 1
-  defp _square(number), do: 2 * _square(number - 1)
+  defp _square(number), do: 1 <<< (number - 1)
 
   @doc """
   Adds square of each number from 1 to 64.
