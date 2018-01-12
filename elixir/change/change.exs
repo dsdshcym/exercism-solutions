@@ -18,18 +18,24 @@ defmodule Change do
   @spec generate(list, integer) :: {:ok, list} | {:error, String.t}
   def generate(_coins, target) when target < 0, do: {:error, "cannot change"}
   def generate(coins, target) do
-    case bfs([{0, []}], coins, target) do
+    case pack(%{0 => []}, 0, coins, target) do
       :error -> {:error, "cannot change"}
       result -> {:ok, result}
     end
   end
 
-  defp bfs([{target, combination} | _], _coins, target), do: combination |> Enum.sort()
-  defp bfs([{current, combination} | rest], coins, target) do
-    next = for coin <- coins, coin + current <= target, do: {coin + current, combination ++ [coin]}
-
-    Enum.concat(rest, next)
-    |> bfs(coins, target)
+  defp pack(combinations, current, _coins, target) when current > target do
+    Map.get(combinations, target, :error)
   end
-  defp bfs([], _, _), do: :error
+  defp pack(combinations, current, coins, target) do
+    coins
+    |> Enum.filter(&Map.has_key?(combinations, current - &1))
+    |> Enum.min_by(&length(Map.get(combinations, current - &1)), fn -> nil end)
+    |> case do
+         nil -> pack(combinations, current + 1, coins, target)
+         result ->
+           current_combination = [result | combinations[current - result]]
+           pack(Map.put(combinations, current, current_combination), current + 1, coins, target)
+       end
+  end
 end

@@ -32,7 +32,6 @@ defmodule ChangeTest do
     assert Change.generate(coins, 63) == {:ok, expected}
   end
 
-  @tag :pending
   test "large target values" do
     coins = [1, 2, 5, 10, 20, 50, 100]
     expected = [2, 2, 5, 20, 20, 50, 100, 100, 100, 100, 100, 100, 100, 100, 100]
