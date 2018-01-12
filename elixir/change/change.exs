@@ -16,26 +16,25 @@ defmodule Change do
   """
 
   @spec generate(list, integer) :: {:ok, list} | {:error, String.t}
-  def generate(_coins, target) when target < 0, do: {:error, "cannot change"}
   def generate(coins, target) do
-    case pack(%{0 => []}, 0, coins, target) do
-      :error -> {:error, "cannot change"}
-      result -> {:ok, result}
-    end
+    (1..target)
+    |> Enum.reduce(%{0 => []}, &(update_combinations(&1, &2, coins)))
+    |> Map.get(target)
+    |> case do
+         nil -> {:error, "cannot change"}
+         result -> {:ok, result}
+       end
   end
 
-  defp pack(combinations, current, _coins, target) when current > target do
-    Map.get(combinations, target, :error)
-  end
-  defp pack(combinations, current, coins, target) do
+  defp update_combinations(current, combinations, coins) do
     coins
     |> Enum.filter(&Map.has_key?(combinations, current - &1))
     |> Enum.min_by(&length(Map.get(combinations, current - &1)), fn -> nil end)
     |> case do
-         nil -> pack(combinations, current + 1, coins, target)
+         nil -> combinations
          result ->
            current_combination = [result | combinations[current - result]]
-           pack(Map.put(combinations, current, current_combination), current + 1, coins, target)
+           Map.put(combinations, current, current_combination)
        end
   end
 end
