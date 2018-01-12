@@ -50,6 +50,11 @@ defmodule ChangeTest do
     assert Change.generate(coins, 0) == {:ok, expected}
   end
 
+  test "error testing for a large coins set" do
+    coins = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+    assert Change.generate(coins, 999) == {:error, "cannot change"}
+  end
+
   test "error testing for change smaller than the smallest of coins" do
     coins = [5, 10]
     assert Change.generate(coins, 3) == {:error, "cannot change"}
