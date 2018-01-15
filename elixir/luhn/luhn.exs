@@ -5,23 +5,18 @@ defmodule Luhn do
   """
   @spec valid?(String.t()) :: boolean
   def valid?(number) do
-    valid_format?(number) and valid_luhn?(convert_string_to_integer_list(number))
+    with true <- longer_than_1_chars?(number),
+         true <- only_digits_and_spaces?(number),
+         true <- no_leading_spaces?(number),
+         digits <- convert_string_to_integer_list(number),
+    do: valid_luhn?(digits)
   end
 
-  defp valid_format?(number) do
-    cond do
-      single_char?(number) -> false
-      include_non_digits_and_spaces?(number) -> false
-      include_leading_spaces?(number) -> false
-      true -> true
-    end
-  end
+  defp longer_than_1_chars?(number), do: String.length(number) > 1
 
-  defp single_char?(number), do: 1 == String.length(number)
+  defp only_digits_and_spaces?(number), do: not (number |> String.match?(~r/[^\d\s]/))
 
-  defp include_non_digits_and_spaces?(number), do: number |> String.match?(~r/[^\d\s]/)
-
-  defp include_leading_spaces?(number), do: number |> String.match?(~r/^\s+/)
+  defp no_leading_spaces?(number), do: not (number |> String.match?(~r/^\s+/))
 
   defp convert_string_to_integer_list(string) do
     string
