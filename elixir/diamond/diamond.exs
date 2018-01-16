@@ -20,12 +20,10 @@ defmodule Diamond do
 
   def line(?A), do: "A"
   def line(letter) do
-    ([letter] ++ List.duplicate(' ', size(letter) - 2) ++ [letter])
-    |> List.to_string()
+    to_string([letter]) <> String.duplicate(" ", String.length(line(letter - 1))) <> to_string([letter])
   end
 
-  def size(?A), do: 1
-  def size(letter), do: size(letter - 1) + 2
+  def size(letter), do: letter |> line() |> String.length()
 
   defp pad(string, count, padding \\ " ") do
     string
