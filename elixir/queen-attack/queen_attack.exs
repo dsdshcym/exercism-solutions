@@ -40,7 +40,7 @@ defmodule Queens do
 
   defp place(board, chess, {x, y}) do
     board
-    |> List.update_at(x, &(List.update_at(&1, y, fn (_) -> chess end)))
+    |> List.update_at(x, &(List.replace_at(&1, y, chess)))
   end
 
   @doc """
