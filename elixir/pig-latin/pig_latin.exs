@@ -20,7 +20,7 @@ defmodule PigLatin do
   @spec translate(phrase :: String.t()) :: String.t()
   def translate(phrase) do
     phrase
-    |> String.split
+    |> String.split()
     |> Enum.map(&translate_word/1)
     |> Enum.join(" ")
   end
@@ -29,11 +29,13 @@ defmodule PigLatin do
     vowel_rule(word)
   end
 
-  defp translate_word(word = <<vowel_group::binary-size(2), _rest::binary>>) when vowel_group in @vowel_groups do
+  defp translate_word(word = <<vowel_group::binary-size(2), _rest::binary>>)
+       when vowel_group in @vowel_groups do
     vowel_rule(word)
   end
 
-  defp translate_word(word = <<consonant::binary-size(1), _rest::binary>>) when consonant not in @vowels do
+  defp translate_word(word = <<consonant::binary-size(1), _rest::binary>>)
+       when consonant not in @vowels do
     consonant_rule(word)
   end
 
@@ -43,11 +45,14 @@ defmodule PigLatin do
 
   # NOTE: It's possible that sink_consonants runs into a infinite loop
   # if we pass in a word that only contains consonants
-  defp sink_consonants(<<consonant_group::binary-size(2), rest::binary>>) when consonant_group in @consonant_groups do
+  defp sink_consonants(<<consonant_group::binary-size(2), rest::binary>>)
+       when consonant_group in @consonant_groups do
     sink_consonants(rest <> consonant_group)
   end
+
   defp sink_consonants(<<consonant::binary-size(1), rest::binary>>) when consonant not in @vowels do
     sink_consonants(rest <> consonant)
   end
+
   defp sink_consonants(word), do: word
 end

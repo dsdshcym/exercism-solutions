@@ -8,7 +8,7 @@ defmodule BracketPush do
   @doc """
   Checks that all the brackets and braces in the string are matched correctly, and nested correctly
   """
-  @spec check_brackets(String.t) :: boolean
+  @spec check_brackets(String.t()) :: boolean
   def check_brackets(string) do
     check_brackets(string, [])
   end
@@ -20,9 +20,11 @@ defmodule BracketPush do
     defp check_brackets(unquote(open) <> rest, stack) do
       check_brackets(rest, [unquote(open) | stack])
     end
+
     defp check_brackets(unquote(close) <> rest, [unquote(open) | rest_stack]) do
       check_brackets(rest, rest_stack)
     end
+
     defp check_brackets(unquote(close) <> _rest, _stack) do
       false
     end

@@ -18,7 +18,6 @@ defmodule NucleotideCount do
     |> Enum.count(&(&1 == nucleotide))
   end
 
-
   @doc """
   Returns a summary of counts by nucleotide.
 
@@ -31,6 +30,6 @@ defmodule NucleotideCount do
   def histogram(strand) do
     @nucleotides
     |> Enum.map(&{&1, count(strand, &1)})
-    |> Map.new
+    |> Map.new()
   end
 end

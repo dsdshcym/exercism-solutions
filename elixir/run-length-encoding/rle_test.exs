@@ -2,8 +2,8 @@ if !System.get_env("EXERCISM_TEST_EXAMPLES") do
   Code.load_file("rle.exs", __DIR__)
 end
 
-ExUnit.start
-ExUnit.configure exclude: :pending, trace: true
+ExUnit.start()
+ExUnit.configure(exclude: :pending, trace: true)
 
 defmodule RunLengthEncoderTest do
   use ExUnit.Case
@@ -21,7 +21,8 @@ defmodule RunLengthEncoderTest do
   end
 
   test "encode single characters mixed with repeated characters" do
-    assert RunLengthEncoder.encode("WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB") === "12WB12W3B24WB"
+    assert RunLengthEncoder.encode("WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB") ===
+             "12WB12W3B24WB"
   end
 
   test "encode multiple whitespace mixed in string" do
@@ -45,7 +46,8 @@ defmodule RunLengthEncoderTest do
   end
 
   test "decode single characters with repeated characters" do
-    assert RunLengthEncoder.decode("12WB12W3B24WB") === "WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB"
+    assert RunLengthEncoder.decode("12WB12W3B24WB") ===
+             "WWWWWWWWWWWWBWWWWWWWWWWWWBBBWWWWWWWWWWWWWWWWWWWWWWWWB"
   end
 
   test "decode multiple whitespace mixed in string" do

@@ -16,6 +16,7 @@ defmodule Sublist do
   defp equal?(_, _), do: false
 
   defp sublist?([], _), do: true
+
   defp sublist?(a, b) do
     b
     |> Stream.chunk_every(length(a), 1, :discard)

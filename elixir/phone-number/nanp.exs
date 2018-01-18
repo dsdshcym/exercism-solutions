@@ -6,9 +6,15 @@ defmodule NANP do
   @exchange_code_regex "(?<exchange_code>[2-9][0-9]{2})"
   @subscriber_number_regex "(?<subscriber_number>[0-9]{4})"
 
-  @parens_style_regex ~r/^#{@country_calling_code_regex}\(#{@area_code_regex}\) #{@exchange_code_regex}-#{@subscriber_number_regex}$/
-  @dot_style_regex ~r/^#{@country_calling_code_regex}#{@area_code_regex}\.#{@exchange_code_regex}\.#{@subscriber_number_regex}$/
-  @pure_digits_style_regex ~r/^#{@country_calling_code_regex}#{@area_code_regex}#{@exchange_code_regex}#{@subscriber_number_regex}$/
+  @parens_style_regex ~r/^#{@country_calling_code_regex}\(#{@area_code_regex}\) #{
+                        @exchange_code_regex
+                      }-#{@subscriber_number_regex}$/
+  @dot_style_regex ~r/^#{@country_calling_code_regex}#{@area_code_regex}\.#{@exchange_code_regex}\.#{
+                     @subscriber_number_regex
+                   }$/
+  @pure_digits_style_regex ~r/^#{@country_calling_code_regex}#{@area_code_regex}#{
+                             @exchange_code_regex
+                           }#{@subscriber_number_regex}$/
 
   def new(raw) do
     raw
@@ -20,14 +26,19 @@ defmodule NANP do
 
   defp maybe_match(raw, regex) when is_binary(raw) do
     case Regex.named_captures(regex, raw) do
-      nil -> raw
+      nil ->
+        raw
+
       match ->
-        %NANP{valid: true,
-              area_code: match["area_code"],
-              exchange_code: match["exchange_code"],
-              subscriber_number: match["subscriber_number"]}
+        %NANP{
+          valid: true,
+          area_code: match["area_code"],
+          exchange_code: match["exchange_code"],
+          subscriber_number: match["subscriber_number"]
+        }
     end
   end
+
   defp maybe_match(nanp, _regex), do: nanp
 
   defp maybe_return_invalid(%NANP{} = nanp), do: nanp
@@ -35,13 +46,12 @@ defmodule NANP do
 end
 
 defimpl String.Chars, for: NANP do
-  def to_string(
-    %NANP{
-      area_code: area_code,
-      exchange_code: exchange_code,
-      subscriber_number: subscriber_number
-    }
-  ), do: "#{area_code}#{exchange_code}#{subscriber_number}"
+  def to_string(%NANP{
+        area_code: area_code,
+        exchange_code: exchange_code,
+        subscriber_number: subscriber_number
+      }),
+      do: "#{area_code}#{exchange_code}#{subscriber_number}"
 
   def to_string(_), do: "0000000000"
 end

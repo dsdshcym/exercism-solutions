@@ -18,7 +18,7 @@ defmodule Roman do
   @doc """
   Convert the number to a roman number.
   """
-  @spec numerals(pos_integer) :: String.t
+  @spec numerals(pos_integer) :: String.t()
   def numerals(number) do
     @mapping
     |> Enum.reduce({number, ""}, &test/2)
@@ -28,5 +28,6 @@ defmodule Roman do
   defp test([limit, roman], {number, result}) when number >= limit do
     test([limit, roman], {number - limit, result <> roman})
   end
+
   defp test(_, {number, result}), do: {number, result}
 end

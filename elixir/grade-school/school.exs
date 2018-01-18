@@ -8,16 +8,16 @@ defmodule School do
   @doc """
   Add a student to a particular grade in school.
   """
-  @spec add(map, String.t, integer) :: map
+  @spec add(map, String.t(), integer) :: map
   def add(db, name, grade) do
     db
-    |> Map.update(grade, [name], &([name | &1]))
+    |> Map.update(grade, [name], &[name | &1])
   end
 
   @doc """
   Return the names of the students in a particular grade.
   """
-  @spec grade(map, integer) :: [String.t]
+  @spec grade(map, integer) :: [String.t()]
   def grade(db, grade) do
     db
     |> Map.get(grade, [])
@@ -26,10 +26,10 @@ defmodule School do
   @doc """
   Sorts the school by grade and name.
   """
-  @spec sort(map) :: [{integer, [String.t]}]
+  @spec sort(map) :: [{integer, [String.t()]}]
   def sort(db) do
     db
-    |> Enum.map(fn({grade, names}) -> {grade, Enum.sort(names)} end)
+    |> Enum.map(fn {grade, names} -> {grade, Enum.sort(names)} end)
     |> Enum.sort()
   end
 end

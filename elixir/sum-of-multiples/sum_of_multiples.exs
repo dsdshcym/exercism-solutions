@@ -11,7 +11,7 @@ defmodule SumOfMultiples do
   end
 
   defp multiples_up_to(factor, limit) do
-    (0..limit - 1)
+    0..(limit - 1)
     |> Enum.take_every(factor)
   end
 end

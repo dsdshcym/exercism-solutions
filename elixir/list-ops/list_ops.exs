@@ -15,6 +15,7 @@ defmodule ListOps do
     # See https://stackoverflow.com/a/22300045/4428402
     reverse(list, [])
   end
+
   defp reverse([], reverted), do: reverted
   defp reverse([head | tail], reverted), do: reverse(tail, [head | reverted])
 
@@ -24,6 +25,7 @@ defmodule ListOps do
 
   @spec filter(list, (any -> as_boolean(term))) :: list
   def filter([], _f), do: []
+
   def filter([head | tail], f) do
     if f.(head) do
       [head | filter(tail, f)]
@@ -33,8 +35,9 @@ defmodule ListOps do
   end
 
   @type acc :: any
-  @spec reduce(list, acc, ((any, acc) -> acc)) :: acc
+  @spec reduce(list, acc, (any, acc -> acc)) :: acc
   def reduce([], acc, _f), do: acc
+
   def reduce([head | tail], acc, f) do
     reduce(tail, f.(head, acc), f)
   end

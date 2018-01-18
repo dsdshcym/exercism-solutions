@@ -14,8 +14,9 @@ defmodule Pangram do
 
   """
 
-  @spec pangram?(String.t) :: boolean
+  @spec pangram?(String.t()) :: boolean
   def pangram?(""), do: false
+
   def pangram?(sentence) do
     sentence
     |> String.downcase()
@@ -26,6 +27,6 @@ defmodule Pangram do
 
   defp contains_all_alphabet_letters?(charlist) do
     @alphabet
-    |> Enum.all?(fn(letter) -> Enum.member?(charlist, letter) end)
+    |> Enum.all?(fn letter -> Enum.member?(charlist, letter) end)
   end
 end

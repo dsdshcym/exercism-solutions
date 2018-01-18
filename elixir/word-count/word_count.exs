@@ -4,7 +4,7 @@ defmodule Words do
 
   Words are compared case-insensitively.
   """
-  @spec count(String.t) :: map
+  @spec count(String.t()) :: map
   def count(sentence) do
     Regex.scan(~r/[\w-]+/u, sentence)
     |> List.flatten()
@@ -25,6 +25,6 @@ defmodule Words do
 
   defp _count(words) do
     words
-    |> Enum.reduce(%{}, fn(word, counts) -> Map.update(counts, word, 1, &(&1 + 1)) end)
+    |> Enum.reduce(%{}, fn word, counts -> Map.update(counts, word, 1, &(&1 + 1)) end)
   end
 end

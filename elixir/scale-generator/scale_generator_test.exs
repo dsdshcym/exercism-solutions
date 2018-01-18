@@ -2,25 +2,25 @@ if !System.get_env("EXERCISM_TEST_EXAMPLES") do
   Code.load_file("scale_generator.exs", __DIR__)
 end
 
-ExUnit.start
-ExUnit.configure trace: true, exclude: :pending
+ExUnit.start()
+ExUnit.configure(trace: true, exclude: :pending)
 
 defmodule ScaleGeneratorTest do
   use ExUnit.Case
 
-  @major_scale_pattern           "MMmMMMm"
-  @minor_scale_pattern           "MmMMmMM"
-  @dorian_scale_pattern          "MmMMMmM"
-  @mixolydian_scale_pattern      "MMmMMmM"
-  @lydian_scale_pattern          "MMMmMMm"
-  @phrygian_scale_pattern        "mMMMmMM"
-  @locrian_scale_pattern         "mMMmMMM"
-  @harmonic_minor_scale_pattern  "MmMMmAm"
-  @melodic_minor_scale_pattern   "MmMMMMm"
-  @octatonic_scale_pattern       "MmMmMmMm"
-  @hexatonic_scale_pattern       "MMMMMM"
-  @pentatonic_scale_pattern      "MMAMA"
-  @enigmatic_scale_pattern       "mAMMMmm"
+  @major_scale_pattern "MMmMMMm"
+  @minor_scale_pattern "MmMMmMM"
+  @dorian_scale_pattern "MmMMMmM"
+  @mixolydian_scale_pattern "MMmMMmM"
+  @lydian_scale_pattern "MMMmMMm"
+  @phrygian_scale_pattern "mMMMmMM"
+  @locrian_scale_pattern "mMMmMMM"
+  @harmonic_minor_scale_pattern "MmMMmAm"
+  @melodic_minor_scale_pattern "MmMMMMm"
+  @octatonic_scale_pattern "MmMmMmMm"
+  @hexatonic_scale_pattern "MMMMMM"
+  @pentatonic_scale_pattern "MMAMA"
+  @enigmatic_scale_pattern "mAMMMmm"
 
   describe "step to next note" do
     test "with half-tone interval" do
@@ -230,4 +230,3 @@ defmodule ScaleGeneratorTest do
     end
   end
 end
-

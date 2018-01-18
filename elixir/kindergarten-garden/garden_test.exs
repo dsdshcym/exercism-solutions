@@ -2,8 +2,8 @@ if !System.get_env("EXERCISM_TEST_EXAMPLES") do
   Code.load_file("garden.exs", __DIR__)
 end
 
-ExUnit.start
-ExUnit.configure exclude: :pending, trace: true
+ExUnit.start()
+ExUnit.configure(exclude: :pending, trace: true)
 
 defmodule GardenTest do
   use ExUnit.Case
@@ -29,19 +29,19 @@ defmodule GardenTest do
   end
 
   test "gets the garden for all students" do
-    garden_info                = Garden.info("VRCGVVRVCGGCCGVRGCVCGCGV\nVRCCCGCRRGVCGCRVVCVGCGCV")
-    assert garden_info.alice   == {:violets, :radishes, :violets, :radishes}
-    assert garden_info.bob     == {:clover, :grass, :clover, :clover}
+    garden_info = Garden.info("VRCGVVRVCGGCCGVRGCVCGCGV\nVRCCCGCRRGVCGCRVVCVGCGCV")
+    assert garden_info.alice == {:violets, :radishes, :violets, :radishes}
+    assert garden_info.bob == {:clover, :grass, :clover, :clover}
     assert garden_info.charlie == {:violets, :violets, :clover, :grass}
-    assert garden_info.david   == {:radishes, :violets, :clover, :radishes}
-    assert garden_info.eve     == {:clover, :grass, :radishes, :grass}
-    assert garden_info.fred    == {:grass, :clover, :violets, :clover}
-    assert garden_info.ginny   == {:clover, :grass, :grass, :clover}
+    assert garden_info.david == {:radishes, :violets, :clover, :radishes}
+    assert garden_info.eve == {:clover, :grass, :radishes, :grass}
+    assert garden_info.fred == {:grass, :clover, :violets, :clover}
+    assert garden_info.ginny == {:clover, :grass, :grass, :clover}
     assert garden_info.harriet == {:violets, :radishes, :radishes, :violets}
-    assert garden_info.ileana  == {:grass, :clover, :violets, :clover}
-    assert garden_info.joseph  == {:violets, :clover, :violets, :grass}
+    assert garden_info.ileana == {:grass, :clover, :violets, :clover}
+    assert garden_info.joseph == {:violets, :clover, :violets, :grass}
     assert garden_info.kincaid == {:grass, :clover, :clover, :grass}
-    assert garden_info.larry   == {:grass, :violets, :clover, :violets}
+    assert garden_info.larry == {:grass, :violets, :clover, :violets}
   end
 
   test "accepts custom child names" do
@@ -51,8 +51,21 @@ defmodule GardenTest do
   end
 
   test "gets the garden for all students with custom child names" do
-    names = [:maggie, :nate, :xander, :ophelia, :pete, :reggie, :sylvia,
-             :tanner, :ursula, :victor, :winnie, :ynold]
+    names = [
+      :maggie,
+      :nate,
+      :xander,
+      :ophelia,
+      :pete,
+      :reggie,
+      :sylvia,
+      :tanner,
+      :ursula,
+      :victor,
+      :winnie,
+      :ynold
+    ]
+
     garden_string = "VRCGVVRVCGGCCGVRGCVCGCGV\nVRCCCGCRRGVCGCRVVCVGCGCV"
     garden_info = Garden.info(garden_string, names)
     assert garden_info.maggie == {:violets, :radishes, :violets, :radishes}

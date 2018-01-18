@@ -34,7 +34,7 @@ defmodule SecretHandshake do
   end
 
   defp append_action_fn(action) do
-    fn(actions) -> actions ++ [action] end
+    fn actions -> actions ++ [action] end
   end
 
   defp check(code, flag) do

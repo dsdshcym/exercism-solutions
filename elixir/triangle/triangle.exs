@@ -4,18 +4,18 @@ defmodule Triangle do
   @doc """
   Return the kind of triangle of a triangle with 'a', 'b' and 'c' as lengths.
   """
-  @spec kind(number, number, number) :: { :ok, kind } | { :error, String.t }
+  @spec kind(number, number, number) :: {:ok, kind} | {:error, String.t()}
   def kind(a, b, c)
-    when a <= 0
-    when b <= 0
-    when c <= 0,
-    do: {:error, "all side lengths must be positive" }
+      when a <= 0
+      when b <= 0
+      when c <= 0,
+      do: {:error, "all side lengths must be positive"}
 
   def kind(a, b, c)
-    when a + b <= c
-    when a + c <= b
-    when b + c <= a,
-    do: {:error, "side lengths violate triangle inequality"}
+      when a + b <= c
+      when a + c <= b
+      when b + c <= a,
+      do: {:error, "side lengths violate triangle inequality"}
 
   def kind(a, a, a), do: {:ok, :equilateral}
 

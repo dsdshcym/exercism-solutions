@@ -23,9 +23,11 @@ defmodule BinarySearch do
   end
 
   defp search(_numbers, _key, start_index, end_index) when start_index > end_index, do: :not_found
+
   defp search(numbers, key, start_index, end_index) do
     median_index = div(start_index + end_index, 2)
     median = elem(numbers, median_index)
+
     cond do
       key == median -> {:ok, median_index}
       key < median -> search(numbers, key, start_index, median_index - 1)

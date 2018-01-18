@@ -24,6 +24,7 @@ defmodule Hexadecimal do
 
   defp to_decimal("", result), do: result
   defp to_decimal(<<digit::binary-size(1)>> <> _, _result) when digit not in @valid_digits, do: 0
+
   defp to_decimal(<<digit::binary-size(1)>> <> rest, result) do
     to_decimal(rest, result * 16 + hex_digit_to_dec(digit))
   end

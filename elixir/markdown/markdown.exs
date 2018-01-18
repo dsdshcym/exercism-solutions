@@ -10,7 +10,7 @@ defmodule Markdown do
     iex> Markdown.parse("#Header!\n* __Bold Item__\n* _Italic Item_")
     "<h1>Header!</h1><ul><li><em>Bold Item</em></li><li><i>Italic Item</i></li></ul>"
   """
-  @spec parse(String.t) :: String.t
+  @spec parse(String.t()) :: String.t()
   def parse(m) do
     m
     |> String.split("\n")
@@ -47,7 +47,9 @@ defmodule Markdown do
   defp header?(m), do: String.match?(m, ~r/#+ /)
 
   defp parse_header(m) do
-    %{"level" => level, "header" => header} = Regex.named_captures(~r/^(?<level>#+) (?<header>.*)/, m)
+    %{"level" => level, "header" => header} =
+      Regex.named_captures(~r/^(?<level>#+) (?<header>.*)/, m)
+
     header_tag = "h#{String.length(level)}"
     header |> wrap_in_tag(header_tag)
   end
@@ -72,6 +74,7 @@ defmodule Markdown do
   defp wrap_in_tag(string, tag) do
     open_tag = "<#{tag}>"
     close_tag = "</#{tag}>"
+
     [open_tag, string, close_tag]
     |> Enum.join()
   end

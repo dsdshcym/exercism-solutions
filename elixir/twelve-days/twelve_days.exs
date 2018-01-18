@@ -2,7 +2,7 @@ defmodule TwelveDays do
   @doc """
   Sing all 12 verses, in order, one verse per line.
   """
-  @spec sing():: String.t()
+  @spec sing() :: String.t()
   def sing do
     verses(1, 12)
   end
@@ -24,7 +24,9 @@ defmodule TwelveDays do
   """
   @spec verse(number :: integer) :: String.t()
   def verse(number) do
-    "On the #{to_order(number)} day of Christmas my true love gave to me, #{gifts_sentence(number..1)}."
+    "On the #{to_order(number)} day of Christmas my true love gave to me, #{
+      gifts_sentence(number..1)
+    }."
   end
 
   defp to_order(1), do: "first"

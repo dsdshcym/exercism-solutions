@@ -1,5 +1,18 @@
 defmodule Garden do
-  @default_students [:alice, :bob, :charlie, :david, :eve, :fred, :ginny, :harriet, :ileana, :joseph, :kincaid, :larry]
+  @default_students [
+    :alice,
+    :bob,
+    :charlie,
+    :david,
+    :eve,
+    :fred,
+    :ginny,
+    :harriet,
+    :ileana,
+    :joseph,
+    :kincaid,
+    :larry
+  ]
   @assignment_length 2
 
   @doc """
@@ -49,7 +62,7 @@ defmodule Garden do
   defp assign_flowers_to_students(assignments, student_names) do
     default_assignments =
       student_names
-      |> Enum.into(%{}, &({&1, {}}))
+      |> Enum.into(%{}, &{&1, {}})
 
     [student_names, assignments]
     |> Enum.zip()

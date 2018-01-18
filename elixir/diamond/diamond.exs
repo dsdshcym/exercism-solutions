@@ -3,7 +3,7 @@ defmodule Diamond do
   Given a letter, it prints a diamond starting with 'A',
   with the supplied letter at the widest point.
   """
-  @spec build_shape(char) :: String.t
+  @spec build_shape(char) :: String.t()
   def build_shape(letter) do
     letter
     |> build_range()
@@ -14,13 +14,16 @@ defmodule Diamond do
   end
 
   def build_range(?A), do: [?A]
-  def build_range(letter) when letter in (?B..?Z) do
-    Enum.concat(?A..letter, (letter-1)..?A)
+
+  def build_range(letter) when letter in ?B..?Z do
+    Enum.concat(?A..letter, (letter - 1)..?A)
   end
 
   def line(?A), do: "A"
+
   def line(letter) do
-    to_string([letter]) <> String.duplicate(" ", String.length(line(letter - 1))) <> to_string([letter])
+    to_string([letter]) <>
+      String.duplicate(" ", String.length(line(letter - 1))) <> to_string([letter])
   end
 
   def size(letter), do: letter |> line() |> String.length()

@@ -4,7 +4,7 @@ defmodule Binary do
 
   On errors returns 0.
   """
-  @spec to_decimal(String.t) :: non_neg_integer
+  @spec to_decimal(String.t()) :: non_neg_integer
   def to_decimal(binary), do: to_decimal(binary, 0)
 
   def to_decimal("", result), do: result

@@ -2,8 +2,8 @@ if !System.get_env("EXERCISM_TEST_EXAMPLES") do
   Code.load_file("matrix.exs", __DIR__)
 end
 
-ExUnit.start
-ExUnit.configure trace: true, exclude: :pending
+ExUnit.start()
+ExUnit.configure(trace: true, exclude: :pending)
 
 defmodule MatrixTest do
   use ExUnit.Case
@@ -19,10 +19,10 @@ defmodule MatrixTest do
     matrix = Matrix.from_string(@input)
 
     assert Matrix.rows(matrix) == [
-      [1, 2, 3],
-      [4, 5, 6],
-      [7, 8, 9]
-    ]
+             [1, 2, 3],
+             [4, 5, 6],
+             [7, 8, 9]
+           ]
   end
 
   test "row should return list at index" do
@@ -37,10 +37,10 @@ defmodule MatrixTest do
     matrix = Matrix.from_string(@input)
 
     assert Matrix.columns(matrix) == [
-      [1, 4, 7],
-      [2, 5, 8],
-      [3, 6, 9]
-    ]
+             [1, 4, 7],
+             [2, 5, 8],
+             [3, 6, 9]
+           ]
   end
 
   test "column should return list at index" do

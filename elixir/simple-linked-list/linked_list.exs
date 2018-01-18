@@ -58,6 +58,7 @@ defmodule LinkedList do
   """
   @spec from_list(list()) :: t
   def from_list([]), do: new()
+
   def from_list([head | tail]) do
     tail
     |> from_list()
@@ -76,6 +77,7 @@ defmodule LinkedList do
   """
   @spec reverse(t) :: t
   def reverse(list = %LinkedList{length: 0}), do: list
+
   def reverse(%LinkedList{} = list) do
     list
     |> to_list

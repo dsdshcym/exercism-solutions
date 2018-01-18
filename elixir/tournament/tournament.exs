@@ -29,20 +29,21 @@ defmodule Tournament do
     for [team1, team2, match_result] <- matches do
       case match_result do
         "win" ->
-          %{team1 => %{mp: 1, w: 1, d: 0, l: 0, p: 3},
-            team2 => %{mp: 1, w: 0, d: 0, l: 1, p: 0}}
+          %{team1 => %{mp: 1, w: 1, d: 0, l: 0, p: 3}, team2 => %{mp: 1, w: 0, d: 0, l: 1, p: 0}}
+
         "loss" ->
-          %{team1 => %{mp: 1, w: 0, d: 0, l: 1, p: 0},
-            team2 => %{mp: 1, w: 1, d: 0, l: 0, p: 3}}
+          %{team1 => %{mp: 1, w: 0, d: 0, l: 1, p: 0}, team2 => %{mp: 1, w: 1, d: 0, l: 0, p: 3}}
+
         "draw" ->
-          %{team1 => %{mp: 1, w: 0, d: 1, l: 0, p: 1},
-            team2 => %{mp: 1, w: 0, d: 1, l: 0, p: 1}}
-        _ -> %{}
+          %{team1 => %{mp: 1, w: 0, d: 1, l: 0, p: 1}, team2 => %{mp: 1, w: 0, d: 1, l: 0, p: 1}}
+
+        _ ->
+          %{}
       end
     end
-    |> Enum.reduce(%{}, fn(match, result) ->
-      Map.merge(match, result, fn(_k, statistics1, statistics2) ->
-        Map.merge(statistics1, statistics2, fn(_k, count1, count2) -> count1 + count2 end)
+    |> Enum.reduce(%{}, fn match, result ->
+      Map.merge(match, result, fn _k, statistics1, statistics2 ->
+        Map.merge(statistics1, statistics2, fn _k, count1, count2 -> count1 + count2 end)
       end)
     end)
   end
@@ -50,8 +51,10 @@ defmodule Tournament do
   defp as_table(statistics) do
     columns =
       statistics
-      |> Enum.sort_by(fn({team, statistic}) -> [-statistic.p, team] end)
-      |> Enum.map(fn({team, statistic}) -> [team, statistic.mp, statistic.w, statistic.d, statistic.l, statistic.p] end)
+      |> Enum.sort_by(fn {team, statistic} -> [-statistic.p, team] end)
+      |> Enum.map(fn {team, statistic} ->
+        [team, statistic.mp, statistic.w, statistic.d, statistic.l, statistic.p]
+      end)
 
     [@title | columns]
     |> Enum.map(&format_row/1)

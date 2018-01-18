@@ -13,10 +13,10 @@ defmodule ETL do
     |> Enum.flat_map(&invert_value_words_map/1)
     |> Enum.into(%{})
   end
-  
+
   defp invert_value_words_map({value, words}) do
-      words
-      |> Enum.map(&String.downcase/1)
-      |> Enum.map(&{&1, value})
+    words
+    |> Enum.map(&String.downcase/1)
+    |> Enum.map(&{&1, value})
   end
 end

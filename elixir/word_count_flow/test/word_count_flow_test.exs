@@ -3,16 +3,16 @@ defmodule WordCountFlowTest do
   doctest WordCountFlow
 
   test "count one word" do
-    assert WordCountFlow.count("word") == %{ "word" => 1 }
+    assert WordCountFlow.count("word") == %{"word" => 1}
   end
 
   test "count one of each" do
-    expected = %{ "one" => 1 ,  "of" => 1 ,  "each" => 1 }
+    expected = %{"one" => 1, "of" => 1, "each" => 1}
     assert WordCountFlow.count("one of each") == expected
   end
 
   test "count multiple occurrences" do
-    expected = %{ "one" => 1 ,  "fish" => 4 ,  "two" => 1 ,  "red" => 1 ,  "blue" => 1 }
+    expected = %{"one" => 1, "fish" => 4, "two" => 1, "red" => 1, "blue" => 1}
     assert WordCountFlow.count("one fish two fish red fish blue fish") == expected
   end
 

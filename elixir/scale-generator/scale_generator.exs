@@ -17,10 +17,12 @@ defmodule ScaleGenerator do
   "M": E
   "A": F
   """
-  @spec step(scale :: list(String.t()), tonic :: String.t(), step :: String.t()) :: list(String.t())
+  @spec step(scale :: list(String.t()), tonic :: String.t(), step :: String.t()) ::
+          list(String.t())
   def step(scale, tonic, "m"), do: step(scale, tonic, 1)
   def step(scale, tonic, "M"), do: step(scale, tonic, 2)
   def step(scale, tonic, "A"), do: step(scale, tonic, 3)
+
   def step(scale, tonic, step) when is_integer(step) do
     scale
     |> Enum.drop_while(&(&1 != tonic))
@@ -72,7 +74,7 @@ defmodule ScaleGenerator do
   end
 
   defp tonic_not_found(tonic) do
-    fn (another_tonic) ->
+    fn another_tonic ->
       String.upcase(tonic) != String.upcase(another_tonic)
     end
   end
@@ -88,7 +90,9 @@ defmodule ScaleGenerator do
   For all others, use the regular chromatic scale.
   """
   @spec find_chromatic_scale(tonic :: String.t()) :: list(String.t())
-  def find_chromatic_scale(tonic) when tonic in @tonics_require_flat_version, do: flat_chromatic_scale(tonic)
+  def find_chromatic_scale(tonic) when tonic in @tonics_require_flat_version,
+    do: flat_chromatic_scale(tonic)
+
   def find_chromatic_scale(tonic), do: chromatic_scale(tonic)
 
   @doc """
@@ -108,8 +112,9 @@ defmodule ScaleGenerator do
 
     pattern
     |> String.graphemes()
-    |> Enum.map_reduce(List.first(scale), fn(step, tonic) -> {tonic, step(scale, tonic, step)} end)
-    |> case do {previous, last} -> previous ++ [last] end
+    |> Enum.map_reduce(List.first(scale), fn step, tonic -> {tonic, step(scale, tonic, step)} end)
+    |> case do
+      {previous, last} -> previous ++ [last]
+    end
   end
 end
-

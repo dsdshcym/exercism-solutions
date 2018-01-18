@@ -1,6 +1,13 @@
 defmodule SpaceAge do
-  @type planet :: :mercury | :venus | :earth | :mars | :jupiter
-                | :saturn | :uranus | :neptune
+  @type planet ::
+          :mercury
+          | :venus
+          | :earth
+          | :mars
+          | :jupiter
+          | :saturn
+          | :uranus
+          | :neptune
 
   @earth_day_in_seconds 86400
   @earth_year_in_earth_days 365.25
