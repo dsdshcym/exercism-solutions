@@ -8,16 +8,16 @@ defmodule Sieve do
   def primes_to(limit) do
     2..limit
     |> Enum.to_list()
-    |> seive(2, limit)
+    |> do_seive()
   end
 
-  defp seive(seive, limit, limit), do: seive
+  defp do_seive([]), do: []
 
-  defp seive(seive, current, limit) do
+  defp do_seive([prime | seive]) do
     new_seive =
       seive
-      |> Enum.reject(&(&1 != current and rem(&1, current) == 0))
+      |> Enum.filter(&(rem(&1, prime) != 0))
 
-    seive(new_seive, current + 1, limit)
+    [prime | do_seive(new_seive)]
   end
 end
