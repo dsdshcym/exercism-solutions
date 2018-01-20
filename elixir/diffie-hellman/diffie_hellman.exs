@@ -53,7 +53,7 @@ defmodule DiffieHellman do
           integer
   def generate_public_key(prime_p, prime_g, private_key) do
     prime_g
-    |> power_mod(private_key, prime_p)
+    |> mod_power(private_key, prime_p)
   end
 
   @doc """
@@ -69,23 +69,23 @@ defmodule DiffieHellman do
         ) :: integer
   def generate_shared_secret(prime_p, public_key_b, private_key_a) do
     public_key_b
-    |> power_mod(private_key_a, prime_p)
+    |> mod_power(private_key_a, prime_p)
   end
 
-  defp power_mod(_x, 0, divisor), do: mod(1, divisor)
+  defp mod_power(_x, 0, divisor), do: mod(1, divisor)
 
-  defp power_mod(x, y, divisor) when Integer.is_odd(y) do
+  defp mod_power(x, y, divisor) when Integer.is_odd(y) do
     half_y = div(y, 2)
-    power_half = power_mod(x, half_y, divisor)
+    power_half = mod_power(x, half_y, divisor)
 
     power_half
     |> mul_mod(power_half, divisor)
     |> mul_mod(x, divisor)
   end
 
-  defp power_mod(x, y, divisor) when Integer.is_even(y) do
+  defp mod_power(x, y, divisor) when Integer.is_even(y) do
     half_y = div(y, 2)
-    power_half = power_mod(x, half_y, divisor)
+    power_half = mod_power(x, half_y, divisor)
 
     power_half
     |> mul_mod(power_half, divisor)
