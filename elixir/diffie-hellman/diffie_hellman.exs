@@ -1,7 +1,4 @@
 defmodule DiffieHellman do
-  require Integer
-  import Integer, only: [mod: 2]
-
   @moduledoc """
   Diffie-Hellman is a method of securely exchanging keys in a public-key
   cryptosystem. Two users, Alice and Bob, want to share a secret between
@@ -72,24 +69,8 @@ defmodule DiffieHellman do
     |> mod_power(private_key_a, prime_p)
   end
 
-  defp mod_power(_x, 0, divisor), do: mod(1, divisor)
-
-  defp mod_power(x, y, divisor) when Integer.is_odd(y) do
-    half_y = div(y, 2)
-    power_half = mod_power(x, half_y, divisor)
-
-    power_half
-    |> mul_mod(power_half, divisor)
-    |> mul_mod(x, divisor)
+  defp mod_power(x, y, divisor) do
+    :crypto.mod_pow(x, y, divisor)
+    |> :binary.decode_unsigned()
   end
-
-  defp mod_power(x, y, divisor) when Integer.is_even(y) do
-    half_y = div(y, 2)
-    power_half = mod_power(x, half_y, divisor)
-
-    power_half
-    |> mul_mod(power_half, divisor)
-  end
-
-  defp mul_mod(a, b, divisor), do: mod(a * b, divisor)
 end
