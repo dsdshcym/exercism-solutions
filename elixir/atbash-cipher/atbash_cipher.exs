@@ -1,7 +1,6 @@
 defmodule Atbash do
   @plain "abcdefghijklmnopqrstuvwxyz" |> String.graphemes()
   @cipher "zyxwvutsrqponmlkjihgfedcba" |> String.graphemes()
-  @digits "1234567890" |> String.graphemes()
 
   @doc """
   Encode a given plaintext to the corresponding ciphertext
@@ -14,43 +13,38 @@ defmodule Atbash do
   @spec encode(String.t()) :: String.t()
   def encode(plaintext) do
     plaintext
+    |> String.replace(~r/[^\w]/, "")
     |> String.downcase()
+    |> translate(@plain, @cipher)
     |> String.graphemes()
-    |> Enum.map(&encode_char/1)
-    |> Enum.reject(&(&1 == ""))
     |> Enum.chunk_every(5)
-    |> Enum.map(&Enum.join(&1))
+    |> Enum.map(&to_string/1)
     |> Enum.join(" ")
   end
-
-  defp encode_char(digit) when digit in @digits, do: digit
-
-  defp encode_char(char) when char in @plain do
-    index =
-      @plain
-      |> Enum.find_index(&(&1 == char))
-
-    Enum.at(@cipher, index)
-  end
-
-  defp encode_char(_), do: ""
 
   @spec decode(String.t()) :: String.t()
   def decode(cipher) do
     cipher
+    |> String.replace(" ", "")
+    |> translate(@cipher, @plain)
+  end
+
+  defp translate(string, from, to) do
+    string
     |> String.graphemes()
-    |> Enum.reject(&(&1 == " "))
-    |> Enum.map(&decode_char/1)
-    |> Enum.join()
+    |> Enum.map(&translate_char(&1, from, to))
+    |> to_string()
   end
 
-  defp decode_char(char) when char in @cipher do
-    index =
-      @cipher
-      |> Enum.find_index(&(&1 == char))
+  defp translate_char(char, from, to) do
+    if char in from do
+      index =
+        from
+        |> Enum.find_index(&(&1 == char))
 
-    Enum.at(@plain, index)
+      Enum.at(to, index)
+    else
+      char
+    end
   end
-
-  defp decode_char(char), do: char
 end
