@@ -5,10 +5,15 @@ defmodule Wordy do
   @spec answer(String.t()) :: integer
   def answer(question) do
     question
+    |> tokenize()
+    |> calc()
+  end
+
+  defp tokenize(sentence) do
+    sentence
     |> remove_trailing_question_mark()
     |> split_into_list()
     |> parse_words_list()
-    |> calc()
   end
 
   defp remove_trailing_question_mark(sentence) do
