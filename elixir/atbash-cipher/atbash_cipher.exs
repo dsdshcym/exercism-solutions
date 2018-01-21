@@ -29,11 +29,10 @@ defmodule Atbash do
     |> translate(@cipher, @plain)
   end
 
-  defp translate(string, from, to) do
-    string
-    |> String.graphemes()
-    |> Enum.map(&translate_char(&1, from, to))
-    |> to_string()
+  defp translate("", _from, _to), do: ""
+
+  defp translate(<<char::binary-size(1)>> <> rest, from, to) do
+    translate_char(char, from, to) <> translate(rest, from, to)
   end
 
   defp translate_char(char, from, to) do
