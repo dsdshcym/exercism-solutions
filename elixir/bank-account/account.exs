@@ -1,6 +1,4 @@
 defmodule BankAccount do
-  defstruct closed: false, balance: 0
-
   @moduledoc """
   A bank account that supports access from multiple processes.
   """
@@ -15,7 +13,7 @@ defmodule BankAccount do
   """
   @spec open_bank() :: account
   def open_bank() do
-    {:ok, account} = Agent.start_link(fn -> %BankAccount{} end)
+    {:ok, account} = Agent.start_link(fn -> 0 end)
 
     account
   end
@@ -26,7 +24,7 @@ defmodule BankAccount do
   @spec close_bank(account) :: none
   def close_bank(account) do
     account
-    |> Agent.cast(&%BankAccount{&1 | closed: true})
+    |> Agent.cast(fn _ -> :closed end)
   end
 
   @doc """
@@ -36,8 +34,8 @@ defmodule BankAccount do
   def balance(account) do
     account
     |> Agent.get(fn
-      %BankAccount{closed: false, balance: balance} -> balance
-      %BankAccount{closed: true} -> {:error, :account_closed}
+      :closed -> {:error, :account_closed}
+      balance -> balance
     end)
   end
 
@@ -48,11 +46,8 @@ defmodule BankAccount do
   def update(account, amount) do
     account
     |> Agent.get_and_update(fn
-      %BankAccount{closed: false, balance: balance} = state ->
-        {:ok, %BankAccount{state | balance: balance + amount}}
-
-      %BankAccount{closed: true} = state ->
-        {{:error, :account_closed}, state}
+      :closed -> {{:error, :account_closed}, :closed}
+      balance -> {:ok, balance + amount}
     end)
   end
 end
