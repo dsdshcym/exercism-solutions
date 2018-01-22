@@ -6,11 +6,10 @@ defmodule Series do
   def largest_product(_, size) when size < 0, do: raise(ArgumentError)
   def largest_product(_, 0), do: 1
 
-  def largest_product(number_string, size) do
-    if String.length(number_string) < size do
-      raise ArgumentError
-    end
+  def largest_product(number_string, size) when byte_size(number_string) < size,
+    do: raise(ArgumentError)
 
+  def largest_product(number_string, size) do
     number_string
     |> String.graphemes()
     |> Enum.map(&String.to_integer/1)
