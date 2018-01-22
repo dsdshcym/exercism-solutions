@@ -15,7 +15,9 @@ defmodule BankAccount do
   """
   @spec open_bank() :: account
   def open_bank() do
-    start_link()
+    {:ok, account} = Agent.start_link(fn -> %BankAccount{} end)
+
+    account
   end
 
   @doc """
@@ -23,7 +25,8 @@ defmodule BankAccount do
   """
   @spec close_bank(account) :: none
   def close_bank(account) do
-    send(account, :close)
+    account
+    |> Agent.cast(&%BankAccount{&1 | closed: true})
   end
 
   @doc """
@@ -31,12 +34,11 @@ defmodule BankAccount do
   """
   @spec balance(account) :: integer
   def balance(account) do
-    send(account, {:balance, self()})
-
-    receive do
-      {:ok, balance} -> balance
-      {:error, reason} -> {:error, reason}
-    end
+    account
+    |> Agent.get(fn
+      %BankAccount{closed: false, balance: balance} -> balance
+      %BankAccount{closed: true} -> {:error, :account_closed}
+    end)
   end
 
   @doc """
@@ -44,45 +46,13 @@ defmodule BankAccount do
   """
   @spec update(account, integer) :: any
   def update(account, amount) do
-    send(account, {:update, amount, self()})
+    account
+    |> Agent.get_and_update(fn
+      %BankAccount{closed: false, balance: balance} = state ->
+        {:ok, %BankAccount{state | balance: balance + amount}}
 
-    receive do
-      :ok -> :ok
-      {:error, reason} -> {:error, reason}
-    end
-  end
-
-  defp start_link() do
-    spawn_link(fn -> loop(%BankAccount{}) end)
-  end
-
-  defp loop(%BankAccount{closed: false} = state) do
-    receive do
-      {:balance, caller} ->
-        send(caller, {:ok, state.balance})
-        loop(state)
-
-      {:update, amount, caller} ->
-        send(caller, :ok)
-        loop(%BankAccount{state | balance: state.balance + amount})
-
-      :close ->
-        loop(%BankAccount{state | closed: true})
-    end
-  end
-
-  defp loop(%BankAccount{closed: true} = state) do
-    receive do
-      {:balance, caller} ->
-        send(caller, {:error, :account_closed})
-        loop(state)
-
-      {:update, _amount, caller} ->
-        send(caller, {:error, :account_closed})
-        loop(state)
-
-      :close ->
-        loop(state)
-    end
+      %BankAccount{closed: true} = state ->
+        {{:error, :account_closed}, state}
+    end)
   end
 end
