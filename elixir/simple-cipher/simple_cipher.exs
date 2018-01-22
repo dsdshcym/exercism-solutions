@@ -31,7 +31,7 @@ defmodule SimpleCipher do
   as are necessary.
   """
   def encode(plaintext, keys) do
-    rotate(plaintext, keys, fn {char, key} -> alphabet_rotate(char, key - ?a) end)
+    rotate(plaintext, keys, fn key -> alphabet_rotate_fn(key - ?a) end)
   end
 
   @doc """
@@ -45,24 +45,29 @@ defmodule SimpleCipher do
   etc..., depending on how much you shift the alphabet.
   """
   def decode(ciphertext, keys) do
-    rotate(ciphertext, keys, fn {char, key} -> alphabet_rotate(char, ?a - key) end)
+    rotate(ciphertext, keys, fn key -> alphabet_rotate_fn(?a - key) end)
   end
 
-  defp rotate(string, keys, rotate_fn) do
+  defp rotate(string, keys, key_to_transform_fn) do
     string
     |> String.to_charlist()
     |> Enum.zip(
       keys
       |> String.to_charlist()
+      |> Enum.map(key_to_transform_fn)
       |> Stream.cycle()
     )
-    |> Enum.map(rotate_fn)
+    |> Enum.map(fn {char, transform_fn} -> transform_fn.(char) end)
     |> to_string()
   end
 
-  defp alphabet_rotate(char, offset) when char in ?a..?z do
-    Integer.mod(char - ?a + offset, 26) + ?a
-  end
+  defp alphabet_rotate_fn(offset) do
+    fn
+      char when char in ?a..?z ->
+        Integer.mod(char - ?a + offset, 26) + ?a
 
-  defp alphabet_rotate(char, _offset), do: char
+      char ->
+        char
+    end
+  end
 end
