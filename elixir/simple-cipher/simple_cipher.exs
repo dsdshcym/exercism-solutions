@@ -30,17 +30,8 @@ defmodule SimpleCipher do
   "abcabca". If the key is longer than the text, only use as many letters of it
   as are necessary.
   """
-  def encode(plaintext, keys) when is_binary(plaintext) and is_binary(keys) do
-    plaintext
-    |> String.to_charlist()
-    |> encode(String.to_charlist(keys))
-    |> to_string()
-  end
-
-  def encode(plainchars, keys) do
-    plainchars
-    |> Enum.zip(Stream.cycle(keys))
-    |> Enum.map(fn {char, key} -> alphabet_rotate(char, key - ?a) end)
+  def encode(plaintext, keys) do
+    rotate(plaintext, keys, fn {char, key} -> alphabet_rotate(char, key - ?a) end)
   end
 
   @doc """
@@ -53,17 +44,20 @@ defmodule SimpleCipher do
   but you will go the opposite way, so "d" becomes "a", "w" becomes "t",
   etc..., depending on how much you shift the alphabet.
   """
-  def decode(ciphertext, keys) when is_binary(ciphertext) and is_binary(keys) do
-    ciphertext
-    |> String.to_charlist()
-    |> decode(String.to_charlist(keys))
-    |> to_string()
+  def decode(ciphertext, keys) do
+    rotate(ciphertext, keys, fn {char, key} -> alphabet_rotate(char, ?a - key) end)
   end
 
-  def decode(cipherchars, keys) do
-    cipherchars
-    |> Enum.zip(Stream.cycle(keys))
-    |> Enum.map(fn {char, key} -> alphabet_rotate(char, ?a - key) end)
+  defp rotate(string, keys, rotate_fn) do
+    string
+    |> String.to_charlist()
+    |> Enum.zip(
+      keys
+      |> String.to_charlist()
+      |> Stream.cycle()
+    )
+    |> Enum.map(rotate_fn)
+    |> to_string()
   end
 
   defp alphabet_rotate(char, offset) when char in ?a..?z do
