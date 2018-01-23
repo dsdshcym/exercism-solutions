@@ -24,28 +24,22 @@ defmodule CryptoSquare do
   end
 
   defp rectanglize(str) do
-    str
-    |> String.graphemes()
-    |> Enum.chunk_every(
+    rows =
       str
       |> String.length()
       |> :math.sqrt()
       |> Float.ceil()
       |> trunc()
-    )
+
+    str
+    |> String.graphemes()
+    |> Enum.chunk_every(rows, rows, List.duplicate("", rows))
   end
 
   defp transpose(rectangle) do
     rectangle
-    |> Enum.map(&pad_trailing(&1, rectangle |> List.first() |> length(), ""))
     |> Enum.zip()
     |> Enum.map(&Tuple.to_list/1)
-  end
-
-  defp pad_trailing(list, count, _padding) when count <= length(list), do: list
-
-  defp pad_trailing(list, count, padding) do
-    list ++ List.duplicate(padding, count - length(list))
   end
 
   defp rectangle_to_string(rectangle) do
