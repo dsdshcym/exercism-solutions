@@ -20,11 +20,10 @@ defmodule Allergies do
     |> to_allergies_list(@allergies)
   end
 
-  defp to_binary_list(0), do: [0]
-  defp to_binary_list(1), do: [1]
-
   defp to_binary_list(flags) do
-    [rem(flags, 2) | to_binary_list(div(flags, 2))]
+    flags
+    |> Integer.digits(2)
+    |> Enum.reverse()
   end
 
   defp to_allergies_list([], _allergies), do: []
