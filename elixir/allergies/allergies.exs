@@ -1,4 +1,6 @@
 defmodule Allergies do
+  use Bitwise
+
   @allergies ~w[
     eggs
     peanuts
@@ -15,31 +17,18 @@ defmodule Allergies do
   """
   @spec list(non_neg_integer) :: [String.t()]
   def list(flags) do
-    flags
-    |> to_binary_list()
-    |> to_allergies_list(@allergies)
+    for item <- @allergies, allergic_to?(flags, item), do: item
   end
-
-  defp to_binary_list(flags) do
-    flags
-    |> Integer.digits(2)
-    |> Enum.reverse()
-  end
-
-  defp to_allergies_list([], _allergies), do: []
-  defp to_allergies_list(_flags, []), do: []
-
-  defp to_allergies_list([0 | rest_flags], [allergy | rest_allergies]),
-    do: to_allergies_list(rest_flags, rest_allergies)
-
-  defp to_allergies_list([1 | rest_flags], [allergy | rest_allergies]),
-    do: [allergy | to_allergies_list(rest_flags, rest_allergies)]
 
   @doc """
   Returns whether the corresponding flag bit in 'flags' is set for the item.
   """
   @spec allergic_to?(non_neg_integer, String.t()) :: boolean
   def allergic_to?(flags, item) do
-    item in list(flags)
+    index =
+      @allergies
+      |> Enum.find_index(&(&1 == item))
+
+    (1 <<< index &&& flags) != 0
   end
 end
