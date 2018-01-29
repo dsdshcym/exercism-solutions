@@ -20,20 +20,24 @@ defmodule Minesweeper do
   def annotate_spot("*", _, _, _), do: "*"
 
   def annotate_spot(spot, row, column, board) do
+    board
+    |> neighbours_for(row, column)
+    |> Enum.filter(&(&1 == "*"))
+    |> length()
+    |> case do
+      0 -> " "
+      n when n > 0 -> "#{n}"
+    end
+  end
+
+  def neighbours_for(board, row, column) do
     for i <- (row - 1)..(row + 1),
         j <- (column - 1)..(column + 1),
+        {i, j} != {row, column},
         i >= 0,
         j >= 0,
         i < length(board),
         j < length(List.first(board)),
-        board |> Enum.at(i) |> Enum.at(j) == "*" do
-      spot
-    end
-    |> Enum.count()
-    |> to_string
-    |> case do
-      "0" -> " "
-      other -> other
-    end
+        do: board |> Enum.at(i) |> Enum.at(j)
   end
 end
