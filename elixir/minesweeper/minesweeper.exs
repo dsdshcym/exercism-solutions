@@ -37,7 +37,7 @@ defmodule Minesweeper do
         i >= 0,
         j >= 0,
         i < length(board),
-        j < length(List.first(board)),
+        j < length(hd(board)),
         do: board |> Enum.at(i) |> Enum.at(j)
   end
 end
