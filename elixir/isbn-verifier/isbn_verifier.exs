@@ -28,34 +28,29 @@ defmodule ISBNVerifier do
   def isbn_with_dashes?(_), do: false
 
   def isbn_without_dashes?(<<digits::binary-size(9), check::binary-size(1)>>) do
-    valid_digits?(digits) and valid_check?(check) and valid_checksum?(digits, check)
+    with {:ok, digits} <- digits_to_integer(digits |> String.graphemes()),
+         {:ok, check} <- check_to_integer(check) do
+      digits
+      |> Enum.zip(10..2)
+      |> Enum.map(fn {digit, factor} -> digit * factor end)
+      |> Enum.reduce(&+/2)
+      |> Kernel.+(check)
+      |> rem(11)
+      |> Kernel.==(0)
+    end
   end
 
   def isbn_without_dashes?(_), do: false
 
-  defp valid_digits?(digits) do
-    digits
-    |> String.graphemes()
-    |> Enum.all?(&(&1 in @valid_digits))
+  defp digits_to_integer(digits) do
+    if digits |> Enum.all?(&(&1 in @valid_digits)) do
+      {:ok, digits |> Enum.map(&String.to_integer/1)}
+    else
+      false
+    end
   end
 
-  defp valid_check?("X"), do: true
-
-  defp valid_check?(check) do
-    valid_digits?(check)
-  end
-
-  defp valid_checksum?(digits, check) do
-    (digits <> check)
-    |> String.graphemes()
-    |> Enum.map(fn
-      "X" -> 10
-      digit -> String.to_integer(digit)
-    end)
-    |> Enum.zip(10..1)
-    |> Enum.map(fn {digit, factor} -> digit * factor end)
-    |> Enum.reduce(&+/2)
-    |> rem(11)
-    |> Kernel.==(0)
-  end
+  defp check_to_integer("X"), do: {:ok, 10}
+  defp check_to_integer(check) when check in @valid_digits, do: {:ok, String.to_integer(check)}
+  defp check_to_integer(_), do: false
 end
